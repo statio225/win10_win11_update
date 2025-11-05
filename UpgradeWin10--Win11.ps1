@@ -15,7 +15,7 @@ New-Item -ItemType Directory -Path $destPath,$logPath -Force | Out-Null
 Write-Host "Downloading Windows 11 ISO..."
 
 # Download ISO (BITS = resumable)
-Start-BitsTransfer -Source $isoUrl -Destination $isoPath
+Invoke-WebRequest -Uri $isoUrl -OutFile $isoPath -UseBasicParsing
 
 Write-Host "ISO downloaded to $isoPath"
 
