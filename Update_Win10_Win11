@@ -1,0 +1,14 @@
+$dir = 'C:\temp\win11'
+if (!(Test-Path $dir)) {
+    New-Item -ItemType Directory -Path $dir | Out-Null
+}
+
+$webClient = New-Object System.Net.WebClient
+$url = 'https://go.microsoft.com/fwlink/?linkid=2171764'
+$file = "$dir\Windows11InstallationAssistant.exe"
+
+Write-Host "Téléchargement de l'outil Windows 11..."
+$webClient.DownloadFile($url, $file)
+
+Write-Host "Lancement de la mise à niveau silencieuse..."
+Start-Process -FilePath $file -ArgumentList "/QuietInstall /SkipEULA /auto upgrade /dynamicupdate enable /copylogs $dir" -Verb RunAs
