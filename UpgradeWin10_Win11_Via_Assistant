@@ -1,0 +1,21 @@
+# Crée le dossier temporaire
+$dir = 'C:\temp\win11'
+if (!(Test-Path $dir)) {
+    New-Item -ItemType Directory -Path $dir | Out-Null
+}
+
+# Ajoute les clés de registre pour ignorer les vérifications matérielles
+Write-Host "Désactivation des vérifications de compatibilité (TPM, Secure Boot, CPU)..."
+New-ItemProperty -Path "HKLM:\SYSTEM\Setup\MoSetup" -Name "AllowUpgradesWithUnsupportedTPMOrCPU" -PropertyType DWord -Value 1 -Force | Out-Null
+
+# Téléchargement de l’assistant d’installation de Windows 11
+$webClient = New-Object System.Net.WebClient
+$url = 'https://go.microsoft.com/fwlink/?linkid=2171764'
+$file = "$dir\Windows11InstallationAssistant.exe"
+
+Write-Host "Téléchargement de Windows11InstallationAssistant.exe..."
+$webClient.DownloadFile($url, $file)
+
+# Lancement de l’installation silencieuse
+Write-Host "Lancement de la mise à niveau vers Windows 11..."
+Start-Process -FilePath $file -ArgumentList "/QuietInstall /SkipEULA /auto upgrade /dynamicupdate enable /copylogs $dir" -Verb RunAs
